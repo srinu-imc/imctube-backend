@@ -24,39 +24,39 @@ public class ArtistResource {
 
     @GET
     public List<Artist> getArtists() {
-	return artistService.getArtists();
+        return artistService.getArtists();
     }
 
     @GET
     @Path("/{artistId}")
     public Artist getArtist(@PathParam("artistId") String artistId) {
-	return artistService.getArtist(artistId);
+        return artistService.getArtist(artistId);
     }
 
     @POST
     public Artist addArtist(Artist artist) {
-	return artistService.addArtist(artist);
+        return artistService.addArtist(artist);
     }
 
     @PUT
     @Path("/{artistId}")
     public Artist updateArtist(@PathParam("artistId") String artistId, Artist artist) {
-	return artistService.updateArtist(artist.getId(), artist);
+        return artistService.updateArtist(artist.getId(), artist);
     }
 
     @DELETE
     @Path("/{artistId}")
     public Artist removeArtist(@PathParam("artistId") String artistId) {
-	return artistService.removeArtist(artistId);
+        return artistService.removeArtist(artistId);
     }
 
     @Path("/{artistId}/movies")
     public MovieResource getMovieResource() {
-	return new MovieResource();
+        return new MovieResource();
     }
 
     @Path("{artistId}/clips")
     public MovieClipResource getMovieClipResource() {
-	return new MovieClipResource();
+        return new MovieClipResource();
     }
 }

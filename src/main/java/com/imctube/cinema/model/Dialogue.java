@@ -1,7 +1,7 @@
 package com.imctube.cinema.model;
 
 public class Dialogue {
-    
+
     // Dialogue native language words typed in English
     String text;
 
@@ -9,7 +9,7 @@ public class Dialogue {
 
     public Dialogue() {
     }
-    
+
     public String getText() {
         return text;
     }

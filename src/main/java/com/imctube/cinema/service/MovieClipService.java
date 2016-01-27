@@ -10,43 +10,43 @@ public class MovieClipService {
     }
 
     public List<MovieClip> getMovieClips() {
-	return MovieClipDb.getMovieClips();
+        return MovieClipDb.getMovieClips();
     }
 
     public List<MovieClip> getMovieClips(String movieId) {
-	return MovieClipDb.getMovieClips(movieId);
+        return MovieClipDb.getMovieClips(movieId);
     }
 
     public List<MovieClip> getArtistMovieClips(String artistId) {
-	return MovieClipDb.getArtistMovieClips(artistId);
+        return MovieClipDb.getArtistMovieClips(artistId);
     }
 
     public List<MovieClip> getMovieClips(String artistId, String movieId) {
-	return MovieClipDb.getMovieClips(artistId, movieId);
+        return MovieClipDb.getMovieClips(artistId, movieId);
     }
 
     public MovieClip getMovieLastAddedClip(String movieId) {
-	return MovieClipDb.getMovieLastAddedClip(movieId);	
+        return MovieClipDb.getMovieLastAddedClip(movieId);
     }
-    
+
     public MovieClip getMovieClip(String clipId) {
-	return MovieClipDb.getMovieClip(clipId);
+        return MovieClipDb.getMovieClip(clipId);
     }
 
     public MovieClip tagArtistToMovieClip(String clipId, String artistId) {
-	return MovieClipDb.tagArtistToMovieClip(clipId, artistId);
+        return MovieClipDb.tagArtistToMovieClip(clipId, artistId);
     }
 
     public MovieClip addMovieClip(String movieId, MovieClip clip) {
-	return MovieClipDb.addMovieClip(movieId, clip);
+        return MovieClipDb.addMovieClip(movieId, clip);
     }
 
     public MovieClip updateMovieClip(String clipId, MovieClip clip) {
-	clip.setClipId(clipId);
-	return MovieClipDb.updateMovieClip(clip);
+        clip.setClipId(clipId);
+        return MovieClipDb.updateMovieClip(clip);
     }
 
     public MovieClip removeMovieClip(String movieClipId) {
-	return MovieClipDb.removeMovieClip(movieClipId);
+        return MovieClipDb.removeMovieClip(movieClipId);
     }
 }

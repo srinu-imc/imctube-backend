@@ -12,9 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.Movie;
-import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.MovieService;
 
 @Path("movies")
@@ -26,44 +24,38 @@ public class MovieResource {
 
     @GET
     public List<Movie> getMovies(@PathParam("artistId") String artistId) {
-	if (artistId == null || artistId.isEmpty()) {
-	    return movieService.getMovies();
-	} else {
-	    return movieService.getMovies(artistId);
-	}
+        if (artistId == null || artistId.isEmpty()) {
+            return movieService.getMovies();
+        } else {
+            return movieService.getMovies(artistId);
+        }
     }
 
     @GET
     @Path("/{movieId}")
     public Movie getMovie(@PathParam("movieId") String movieId) {
-	return movieService.getMovie(movieId);
+        return movieService.getMovie(movieId);
     }
 
     @POST
     public Movie addMovie(Movie movie) {
-	return movieService.addMovie(movie);
-    }
-
-    @POST
-    @Path("/{movieId}/artists/{artistId}")
-    public Artist addArtist(@PathParam("movieId") String movieId, @PathParam("artistId") String artistId) {
-	return movieService.addArtist(artistId, movieId);
+        return movieService.addMovie(movie);
     }
 
     @PUT
     @Path("/{movieId}")
     public Movie updateMovie(@PathParam("movieId") String movieId, Movie movie) {
-	return movieService.updateMovie(movieId, movie);
+        return movieService.updateMovie(movieId, movie);
     }
 
     @DELETE
     @Path("/{movieId}")
     public Movie removeMovie(@PathParam("movieId") String movieId) {
-	return movieService.removeMovie(movieId);
+        return movieService.removeMovie(movieId);
     }
 
     @Path("/{movieId}/clips")
     public MovieClipResource getMovieClipResource() {
-	return new MovieClipResource();
+        return new MovieClipResource();
     }
 }

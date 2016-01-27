@@ -10,23 +10,27 @@ public class ArtistService {
     }
 
     public List<Artist> getArtists() {
-	return ArtistDb.getArtists();
+        return ArtistDb.getArtists();
     }
 
     public Artist getArtist(String artistId) {
-	return ArtistDb.getArtist(artistId);
+        return ArtistDb.getArtist(artistId);
     }
 
     public Artist addArtist(Artist artist) {
-	return ArtistDb.addArtist(artist);
+        return ArtistDb.addArtist(artist);
+    }
+
+    public Artist addMovie(String artistId, String movieId) {
+        return ArtistDb.addMovie(artistId, movieId);
     }
 
     public Artist updateArtist(String artistId, Artist artist) {
-	artist.setId(artistId);
-	return ArtistDb.updateArtist(artist);
+        artist.setId(artistId);
+        return ArtistDb.updateArtist(artist);
     }
 
     public Artist removeArtist(String artistId) {
-	return ArtistDb.removeArtist(artistId);
+        return ArtistDb.removeArtist(artistId);
     }
 }

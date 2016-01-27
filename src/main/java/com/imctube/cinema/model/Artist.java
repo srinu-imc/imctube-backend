@@ -23,11 +23,11 @@ public class Artist {
 
     // Artist nick names
     private Set<String> nickNames = new HashSet<String>();
-    
+
     // Artist date of birth
     private Date dateOfBirth;
-    
-    // Artist thumbnail 
+
+    // Artist thumbnail
     private String thumbnail;
 
     // Movies in which artist appeared, populated when artist is tagged in movie
@@ -77,19 +77,23 @@ public class Artist {
         return Lists.newArrayList(movieIds);
     }
 
+    public Set<String> getMovieIdSet() {
+        return movieIds;
+    }
+
     public void setMovieIds(Set<String> movieIds) {
         this.movieIds = movieIds;
     }
-    
+
     public void addMovieId(String movieId) {
-	movieIds.add(movieId);
+        movieIds.add(movieId);
     }
 
     public String getThumbnail() {
-	return thumbnail;
+        return thumbnail;
     }
 
     public void setThumbnail(String thumbnail) {
-	this.thumbnail = thumbnail;
+        this.thumbnail = thumbnail;
     }
 }

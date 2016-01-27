@@ -17,51 +17,61 @@ import com.mongodb.DBObject;
 public class ArtistDb {
 
     public static List<Artist> getArtists() {
-	DBCollection artistCollection = MongoDbClient.getArtistCollection();
-	DBCursor cursor = artistCollection.find();
+        DBCollection artistCollection = MongoDbClient.getArtistCollection();
+        DBCursor cursor = artistCollection.find();
 
-	List<Artist> artistList = new ArrayList<Artist>();
-	while (cursor.hasNext()) {
-	    artistList.add(JsonToJavaConverter.parseArtist(cursor.next().toString()));
-	}
-	return artistList;
+        List<Artist> artistList = new ArrayList<Artist>();
+        while (cursor.hasNext()) {
+            artistList.add(JsonToJavaConverter.parseArtist(cursor.next().toString()));
+        }
+        return artistList;
     }
 
     public static Artist getArtist(String artistId) {
-	DBCollection artistCollection = MongoDbClient.getArtistCollection();
+        DBCollection artistCollection = MongoDbClient.getArtistCollection();
 
-	DBObject artist = artistCollection.findOne(new BasicDBObject("_id", new ObjectId(artistId)));
-	return JsonToJavaConverter.parseArtist(artist.toString());
+        DBObject artist = artistCollection.findOne(new BasicDBObject("_id", new ObjectId(artistId)));
+        return JsonToJavaConverter.parseArtist(artist.toString());
     }
 
     public static Artist addArtist(Artist artist) {
-	DBCollection artistCollection = MongoDbClient.getArtistCollection();
+        DBCollection artistCollection = MongoDbClient.getArtistCollection();
 
-	ObjectId artistId = new ObjectId();
-	artist.setId(artistId.toString());
+        ObjectId artistId = new ObjectId();
+        artist.setId(artistId.toString());
 
-	DBObject object = JsonToDBObjectConverter.convert(JavaToJsonConverter.convert(artist));
-	object.put("_id", artistId);
+        DBObject object = JsonToDBObjectConverter.convert(JavaToJsonConverter.convert(artist));
+        object.put("_id", artistId);
 
-	artistCollection.insert(object);
-	return artist;
+        artistCollection.insert(object);
+        return artist;
     }
 
     public static Artist removeArtist(String artistId) {
-	DBCollection artistCollection = MongoDbClient.getArtistCollection();
+        DBCollection artistCollection = MongoDbClient.getArtistCollection();
 
-	DBObject artist = artistCollection.findAndRemove(new BasicDBObject("_id", new ObjectId(artistId)));
-	return JsonToJavaConverter.parseArtist(artist.toString());
+        DBObject artist = artistCollection.findAndRemove(new BasicDBObject("_id", new ObjectId(artistId)));
+        return JsonToJavaConverter.parseArtist(artist.toString());
     }
 
     public static Artist updateArtist(Artist artist) {
-	DBCollection artistCollection = MongoDbClient.getArtistCollection();
+        DBCollection artistCollection = MongoDbClient.getArtistCollection();
 
-	return JsonToJavaConverter
-		.parseArtist(
-			artistCollection
-				.findAndModify(new BasicDBObject("_id", new ObjectId(artist.getId())),
-					JsonToDBObjectConverter.convert(JavaToJsonConverter.convert(artist)))
-				.toString());
+        return JsonToJavaConverter
+                .parseArtist(
+                        artistCollection
+                                .findAndModify(new BasicDBObject("_id", new ObjectId(artist.getId())),
+                                        JsonToDBObjectConverter.convert(JavaToJsonConverter.convert(artist)))
+                                .toString());
+    }
+
+    public static Artist addMovie(String artistId, String movieId) {
+        Artist artist = getArtist(artistId);
+        if (artist.getMovieIdSet().contains(movieId)) {
+            return artist;
+        } else {
+            artist.addMovieId(movieId);
+            return updateArtist(artist);
+        }
     }
 }

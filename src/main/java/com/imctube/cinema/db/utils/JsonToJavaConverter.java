@@ -10,14 +10,14 @@ public class JsonToJavaConverter {
     public static Gson gson = new Gson();
 
     public static Artist parseArtist(String jsonArtist) {
-	return gson.fromJson(jsonArtist, Artist.class);
+        return gson.fromJson(jsonArtist, Artist.class);
     }
 
     public static Movie parseMovie(String jsonMovie) {
-	return gson.fromJson(jsonMovie, Movie.class);
+        return gson.fromJson(jsonMovie, Movie.class);
     }
 
     public static MovieClip parseMovieClip(String jsonClip) {
-	return gson.fromJson(jsonClip, MovieClip.class);
+        return gson.fromJson(jsonClip, MovieClip.class);
     }
 }

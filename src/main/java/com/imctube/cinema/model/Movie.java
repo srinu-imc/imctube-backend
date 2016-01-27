@@ -19,22 +19,22 @@ public class Movie {
 
     // Movie youtube videoId
     private String videoId;
-    
+
     // Movie Caption
     private String caption;
-    
+
     // Date of release
     private Date dateOfRelease;
-    
+
     // Certificate
     private String certificate;
-    
+
     // Banner
     private String banner;
-    
+
     // Total thumbnails for the movie
     private int thumbnailCount;
-    
+
     // ClipIds populated by backend when movie clip is being added to movie.
     private Set<String> clipIds = new HashSet<String>();
 
@@ -103,13 +103,13 @@ public class Movie {
     }
 
     public void addClipId(String clipId) {
-	this.clipIds.add(clipId);
+        this.clipIds.add(clipId);
     }
-    
+
     public void setClipIds(Set<String> clipIds) {
         this.clipIds = clipIds;
     }
-    
+
     public int getThumbnailCount() {
         return thumbnailCount;
     }
