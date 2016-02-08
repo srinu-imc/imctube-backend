@@ -33,6 +33,32 @@ public class Artist {
     // Movies in which artist appeared, populated when artist is tagged in movie
     private Set<String> movieIds = new HashSet<String>();
 
+    // UserId of the person who added this artist
+    private String addedBy;
+
+    // UserIds of people who modified this artist
+    private Set<String> modifiedBy = new HashSet<String>();
+
+    public String getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
+    }
+
+    public Set<String> getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(Set<String> modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public void addModifiedBy(String userId) {
+        this.modifiedBy.add(userId);
+    }
+
     public String getId() {
         return id;
     }

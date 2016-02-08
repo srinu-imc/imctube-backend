@@ -35,11 +35,38 @@ public class Movie {
     // Total thumbnails for the movie
     private int thumbnailCount;
 
+    private boolean clipified = false;
+
     // ClipIds populated by backend when movie clip is being added to movie.
     private Set<String> clipIds = new HashSet<String>();
 
-    public Movie() {
+    // User who helped in adding this movie
+    private String addedBy;
 
+    // Set of userIds who helped reviewed this movie
+    private Set<String> modifiedBy = new HashSet<String>();
+
+    public Movie() {
+    }
+
+    public String getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
+    }
+
+    public Set<String> getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(Set<String> modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public void addModifiedBy(String userId) {
+        this.modifiedBy.add(userId);
     }
 
     public String getId() {
@@ -116,5 +143,13 @@ public class Movie {
 
     public void setThumbnailCount(int thumbnailCount) {
         this.thumbnailCount = thumbnailCount;
+    }
+
+    public boolean isClipified() {
+        return clipified;
+    }
+
+    public void setClipified(boolean clipified) {
+        this.clipified = clipified;
     }
 }

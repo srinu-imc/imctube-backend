@@ -38,8 +38,32 @@ public class MovieClip {
     // movieClip
     List<Dialogue> dialogues = new ArrayList<Dialogue>();
 
+    String clipifiedBy;
+
+    Set<String> reviewedBy = new HashSet<String>();
+
     public MovieClip() {
 
+    }
+
+    public String getClipifiedBy() {
+        return clipifiedBy;
+    }
+
+    public void setClipifiedBy(String clipifiedBy) {
+        this.clipifiedBy = clipifiedBy;
+    }
+
+    public Set<String> getReviewedBy() {
+        return reviewedBy;
+    }
+
+    public void setReviewedBy(Set<String> reviewedBy) {
+        this.reviewedBy = reviewedBy;
+    }
+
+    public void addReviewedBy(String userId) {
+        this.reviewedBy.add(userId);
     }
 
     public String getVideoId() {

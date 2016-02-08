@@ -10,8 +10,12 @@ public class MovieService {
     public MovieService() {
     }
 
-    public List<Movie> getMovies() {
-        return MovieDb.getMovies();
+    public List<Movie> getMoviesToClipfy() {
+        return MovieDb.getMoviesToClipify();
+    }
+
+    public List<Movie> getMoviesClipified() {
+        return MovieDb.getMoviesClipified();
     }
 
     public List<Movie> getMovies(String artistId) {

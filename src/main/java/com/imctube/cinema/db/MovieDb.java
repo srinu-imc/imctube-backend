@@ -17,9 +17,17 @@ import com.mongodb.DBObject;
 
 public class MovieDb {
 
-    public static List<Movie> getMovies() {
+    public static List<Movie> getMoviesClipified() {
+        return getMovies(true);
+    }
+
+    public static List<Movie> getMoviesToClipify() {
+        return getMovies(false);
+    }
+
+    private static List<Movie> getMovies(boolean clipified) {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
-        DBCursor cursor = movieCollection.find();
+        DBCursor cursor = movieCollection.find(new BasicDBObject("clipified", clipified));
 
         List<Movie> movieList = new ArrayList<Movie>();
         while (cursor.hasNext()) {

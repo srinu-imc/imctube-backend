@@ -42,4 +42,12 @@ public class MongoDbClient {
     public static DBCollection getClipCollection() {
         return getCinemaDB().getCollection("clips");
     }
+
+    public static DBCollection getUserCollection() {
+        return getCinemaDB().getCollection("users");
+    }
+
+    public static DBCollection getLockCollection() {
+        return getCinemaDB().getCollection("locks");
+    }
 }

@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.imctube.cinema.db.utils.Authorize;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.service.MovieService;
 
@@ -25,7 +26,7 @@ public class MovieResource {
     @GET
     public List<Movie> getMovies(@PathParam("artistId") String artistId) {
         if (artistId == null || artistId.isEmpty()) {
-            return movieService.getMovies();
+            return movieService.getMoviesClipified();
         } else {
             return movieService.getMovies(artistId);
         }
@@ -38,17 +39,20 @@ public class MovieResource {
     }
 
     @POST
+    @Authorize
     public Movie addMovie(Movie movie) {
         return movieService.addMovie(movie);
     }
 
     @PUT
+    @Authorize
     @Path("/{movieId}")
     public Movie updateMovie(@PathParam("movieId") String movieId, Movie movie) {
         return movieService.updateMovie(movieId, movie);
     }
 
     @DELETE
+    @Authorize
     @Path("/{movieId}")
     public Movie removeMovie(@PathParam("movieId") String movieId) {
         return movieService.removeMovie(movieId);

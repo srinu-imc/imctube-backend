@@ -2,6 +2,7 @@ package com.imctube.cinema.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.types.ObjectId;
 
@@ -82,14 +83,18 @@ public class MovieClipDb {
         return clips;
     }
 
-    public static MovieClip getMovieLastAddedClip(String movieId) {
+    public static Optional<MovieClip> getMovieLastAddedClip(String movieId) {
         DBCollection clipCollection = MongoDbClient.getClipCollection();
         DBObject query = new BasicDBObject("_id",
                 new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds())));
 
         DBCursor cursor = clipCollection.find(query).sort(new BasicDBObject("endTime", -1)).limit(1);
 
-        return JsonToJavaConverter.parseMovieClip(cursor.next().toString());
+        if (cursor.hasNext()) {
+            return Optional.of(JsonToJavaConverter.parseMovieClip(cursor.next().toString()));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public static MovieClip getMovieClip(String clipId) {

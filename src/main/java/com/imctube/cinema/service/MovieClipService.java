@@ -1,6 +1,7 @@
 package com.imctube.cinema.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.imctube.cinema.db.MovieClipDb;
 import com.imctube.cinema.model.MovieClip;
@@ -26,7 +27,12 @@ public class MovieClipService {
     }
 
     public MovieClip getMovieLastAddedClip(String movieId) {
-        return MovieClipDb.getMovieLastAddedClip(movieId);
+        Optional<MovieClip> movieClip = MovieClipDb.getMovieLastAddedClip(movieId);
+        if (movieClip.isPresent()) {
+            return movieClip.get();
+        } else {
+            return null;
+        }
     }
 
     public MovieClip getMovieClip(String clipId) {
