@@ -9,8 +9,8 @@ public class ArtistService {
     public ArtistService() {
     }
 
-    public List<Artist> getArtists() {
-        return ArtistDb.getArtists();
+    public List<Artist> getArtists(boolean onlyHaveMovies) {
+        return ArtistDb.getArtists(onlyHaveMovies);
     }
 
     public Artist getArtist(String artistId) {

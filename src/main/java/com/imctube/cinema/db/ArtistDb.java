@@ -16,13 +16,17 @@ import com.mongodb.DBObject;
 
 public class ArtistDb {
 
-    public static List<Artist> getArtists() {
+    public static List<Artist> getArtists(boolean onlyHaveMovies) {
         DBCollection artistCollection = MongoDbClient.getArtistCollection();
         DBCursor cursor = artistCollection.find();
 
         List<Artist> artistList = new ArrayList<Artist>();
         while (cursor.hasNext()) {
-            artistList.add(JsonToJavaConverter.parseArtist(cursor.next().toString()));
+            Artist artist = JsonToJavaConverter.parseArtist(cursor.next().toString());
+            if(onlyHaveMovies && artist.getMovieIds().isEmpty()) {
+                continue;
+            }
+            artistList.add(artist);
         }
         return artistList;
     }
