@@ -2,6 +2,7 @@ package com.imctube.cinema.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 
@@ -13,6 +14,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+
+import jersey.repackaged.com.google.common.collect.Sets;
 
 public class ArtistDb {
 
@@ -61,7 +64,8 @@ public class ArtistDb {
     public static Artist updateArtist(Artist artist) {
         DBCollection artistCollection = MongoDbClient.getArtistCollection();
         Artist existing = getArtist(artist.getId());
-        artist.setMovieIds(existing.getMovieIdSet());
+
+        artist.setMovieIds(Sets.union(existing.getMovieIdSet(), artist.getMovieIdSet()));
 
         return JsonToJavaConverter
                 .parseArtist(
