@@ -15,6 +15,9 @@ public class Artist {
     // database
     private String id;
 
+    // Artist industry name
+    private String industryName;
+
     // Artist first name
     private String firstName;
 
@@ -69,6 +72,14 @@ public class Artist {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public String getIndustryName() {
+        return industryName;
+    }
+
+    public void setIndustryName(String industryName) {
+        this.industryName = industryName;
     }
 
     public void setFirstName(String firstName) {
