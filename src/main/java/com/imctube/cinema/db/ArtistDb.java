@@ -23,7 +23,7 @@ public class ArtistDb {
         List<Artist> artistList = new ArrayList<Artist>();
         while (cursor.hasNext()) {
             Artist artist = JsonToJavaConverter.parseArtist(cursor.next().toString());
-            if(onlyHaveMovies && artist.getMovieIds().isEmpty()) {
+            if (onlyHaveMovies && artist.getMovieIds().isEmpty()) {
                 continue;
             }
             artistList.add(artist);
@@ -60,6 +60,8 @@ public class ArtistDb {
 
     public static Artist updateArtist(Artist artist) {
         DBCollection artistCollection = MongoDbClient.getArtistCollection();
+        Artist existing = getArtist(artist.getId());
+        artist.setMovieIds(existing.getMovieIdSet());
 
         return JsonToJavaConverter
                 .parseArtist(
