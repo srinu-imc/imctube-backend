@@ -43,4 +43,8 @@ public class LockService {
         Lock lock = new Lock(movieId, userId);
         return LockDb.updateLock(lock);
     }
+
+    public Lock removeLockByUserId(String userId) {
+        return LockDb.removeLockByUserId(userId);
+    }
 }

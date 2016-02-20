@@ -73,4 +73,9 @@ public class LockDb {
 
         return getLock(lockCollection.findAndModify(new BasicDBObject("movieId", lock.getMovieId()), dbLock));
     }
+
+    public static Lock removeLockByUserId(String userId) {
+        DBCollection lockCollection = MongoDbClient.getLockCollection();
+        return getLock(lockCollection.findAndRemove(new BasicDBObject("userId", userId)));
+    }
 }

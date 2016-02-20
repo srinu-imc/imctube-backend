@@ -11,6 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -92,7 +93,7 @@ public class ClipifyResource {
     @POST
     @Path("/{movieId}/clips")
     public MovieClip addMovieClip(@Context final HttpServletRequest request, @PathParam("movieId") String movieId,
-            MovieClip clip) {
+            @QueryParam("isLastClip") boolean isLastClip, MovieClip clip) {
         Set<String> artistIds = Sets.newHashSet();
         User user = getUser(request);
         clip.setClipifiedBy(user.getId());
@@ -106,8 +107,19 @@ public class ClipifyResource {
         clip.setArtistIds(artistIds);
 
         // Refresh lock
-        lockService.updateLock(movieId, user.getId());
+        if (isLastClip) {
+            lockService.removeLockByUserId(user.getId());
+            updateMovieAsClipified(movieId);
+        } else {
+            lockService.updateLock(movieId, user.getId());
+        }
 
         return movieClipService.addMovieClip(movieId, clip);
+    }
+
+    private void updateMovieAsClipified(String movieId) {
+        Movie movie = movieService.getMovie(movieId);
+        movie.setClipified(true);
+        movieService.updateMovie(movieId, movie);
     }
 }
