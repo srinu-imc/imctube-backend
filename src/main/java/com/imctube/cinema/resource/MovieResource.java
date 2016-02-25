@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.db.utils.Authorize;
+import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.service.MovieService;
 
@@ -36,6 +37,12 @@ public class MovieResource {
     @Path("/{movieId}")
     public Movie getMovie(@PathParam("movieId") String movieId) {
         return movieService.getMovie(movieId);
+    }
+
+    @GET
+    @Path("/{movieId}/artists")
+    public List<Artist> getArtists(@PathParam("movieId") String movieId) {
+        return movieService.getArtists(movieId);
     }
 
     @POST

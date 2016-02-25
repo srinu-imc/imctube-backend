@@ -40,6 +40,8 @@ public class Movie {
     // ClipIds populated by backend when movie clip is being added to movie.
     private Set<String> clipIds = new HashSet<String>();
 
+    private Set<String> artistIds = new HashSet<String>();
+
     // User who helped in adding this movie
     private String addedBy;
 
@@ -129,6 +131,10 @@ public class Movie {
         return Lists.newArrayList(clipIds);
     }
 
+    public Set<String> getClipIdSet() {
+        return clipIds;
+    }
+
     public void addClipId(String clipId) {
         this.clipIds.add(clipId);
     }
@@ -151,5 +157,17 @@ public class Movie {
 
     public void setClipified(boolean clipified) {
         this.clipified = clipified;
+    }
+
+    public Set<String> getArtistIdSet() {
+        return artistIds;
+    }
+
+    public List<String> getArtistIds() {
+        return Lists.newArrayList(artistIds);
+    }
+
+    public void setArtistIds(Set<String> artistIds) {
+        this.artistIds = artistIds;
     }
 }

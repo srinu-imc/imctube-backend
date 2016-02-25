@@ -2,7 +2,9 @@ package com.imctube.cinema.service;
 
 import java.util.List;
 
+import com.imctube.cinema.db.ArtistDb;
 import com.imctube.cinema.db.MovieDb;
+import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.Movie;
 
 public class MovieService {
@@ -37,5 +39,10 @@ public class MovieService {
 
     public Movie removeMovie(String movieId) {
         return MovieDb.removeMovie(movieId);
+    }
+
+    public List<Artist> getArtists(String movieId) {
+        Movie movie = getMovie(movieId);
+        return ArtistDb.getArtists(movie.getArtistIdSet());
     }
 }

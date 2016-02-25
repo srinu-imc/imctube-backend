@@ -2,18 +2,21 @@ package com.imctube.cinema.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 
 import com.imctube.cinema.db.utils.JavaToJsonConverter;
 import com.imctube.cinema.db.utils.JsonToDBObjectConverter;
 import com.imctube.cinema.db.utils.JsonToJavaConverter;
+import com.imctube.cinema.db.utils.Util;
 import com.imctube.cinema.model.Artist;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import jersey.repackaged.com.google.common.collect.Lists;
 import jersey.repackaged.com.google.common.collect.Sets;
 
 public class ArtistDb {
@@ -29,6 +32,19 @@ public class ArtistDb {
                 continue;
             }
             artistList.add(artist);
+        }
+        return artistList;
+    }
+
+    public static List<Artist> getArtists(Set<String> artistIds) {
+        DBCollection artistCollection = MongoDbClient.getArtistCollection();
+
+        DBCursor cursor = artistCollection.find(
+                new BasicDBObject("_id", new BasicDBObject("$in", Util.getObjectIds(Lists.newArrayList(artistIds)))));
+
+        List<Artist> artistList = new ArrayList<Artist>();
+        while (cursor.hasNext()) {
+            artistList.add(JsonToJavaConverter.parseArtist(cursor.next().toString()));
         }
         return artistList;
     }

@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.db.utils.AuthUtils;
 import com.imctube.cinema.db.utils.Authorize;
-import com.imctube.cinema.model.Dialogue;
 import com.imctube.cinema.model.Lock;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
@@ -91,20 +90,38 @@ public class ClipifyResource {
     }
 
     @POST
+    @Path("/chooseAnother")
+    public void chooseAnotherMovie(@Context final HttpServletRequest request) {
+        User user = getUser(request);
+        Optional<Lock> lock = lockService.getLockByUserId(user.getId());
+        if (lock.isPresent()) {
+            lockService.removeLockByUserId(lock.get().getUserId());
+        }
+    }
+
+    @POST
+    @Path("/{movieId}/doneClipify")
+    public void doneClipify(@Context final HttpServletRequest request, @PathParam("movieId") String movieId) {
+        User user = getUser(request);
+        Optional<Lock> lock = lockService.getLockByUserId(user.getId());
+        if (lock.isPresent()) {
+            lockService.removeLockByUserId(lock.get().getUserId());
+
+        }
+        updateMovieAsClipified(movieId);
+    }
+
+    @POST
     @Path("/{movieId}/clips")
     public MovieClip addMovieClip(@Context final HttpServletRequest request, @PathParam("movieId") String movieId,
             @QueryParam("isLastClip") boolean isLastClip, MovieClip clip) {
-        Set<String> artistIds = Sets.newHashSet();
         User user = getUser(request);
         clip.setClipifiedBy(user.getId());
-        for (Dialogue dialogue : clip.getDialogues()) {
-            artistIds.add(dialogue.getArtistId());
-        }
 
-        for (String artistId : artistIds) {
+        for (String artistId : clip.getArtistIds()) {
             artistService.addMovie(artistId, movieId);
         }
-        clip.setArtistIds(artistIds);
+        updateMovieArtists(movieId, clip.getArtistIds());
 
         // Refresh lock
         if (isLastClip) {
@@ -115,6 +132,13 @@ public class ClipifyResource {
         }
 
         return movieClipService.addMovieClip(movieId, clip);
+    }
+
+    private void updateMovieArtists(String movieId, Set<String> artistIds) {
+        Movie movie = movieService.getMovie(movieId);
+        Set<String> existingArtists = movie.getArtistIdSet();
+        movie.setArtistIds(Sets.union(artistIds, existingArtists));
+        movieService.updateMovie(movieId, movie);
     }
 
     private void updateMovieAsClipified(String movieId) {

@@ -76,6 +76,8 @@ public class MovieDb {
 
     public static Movie updateMovie(Movie movie) {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
+        Movie existingMovie = getMovie(movie.getId());
+        movie.setClipIds(existingMovie.getClipIdSet());
 
         return JsonToJavaConverter
                 .parseMovie(
