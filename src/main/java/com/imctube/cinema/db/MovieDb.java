@@ -15,6 +15,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import jersey.repackaged.com.google.common.collect.Sets;
+
 public class MovieDb {
 
     public static List<Movie> getMoviesClipified() {
@@ -77,7 +79,7 @@ public class MovieDb {
     public static Movie updateMovie(Movie movie) {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
         Movie existingMovie = getMovie(movie.getId());
-        movie.setClipIds(existingMovie.getClipIdSet());
+        movie.setClipIds(Sets.union(movie.getClipIdSet(), existingMovie.getClipIdSet()));
 
         return JsonToJavaConverter
                 .parseMovie(
