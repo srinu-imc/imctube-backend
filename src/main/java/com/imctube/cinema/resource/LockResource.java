@@ -26,7 +26,7 @@ public class LockResource {
 
     @GET
     public List<Lock> getLocks() {
-        return lockService.getLocks();
+        return lockService.getMovieLocks();
     }
 
     @GET
@@ -41,9 +41,20 @@ public class LockResource {
     }
 
     @GET
-    @Path("user/{userId}")
+    @Path("user/{userId}/movie")
     public Lock getLockByUserId(@PathParam("userId") String userId) {
-        Optional<Lock> lock = lockService.getLockByUserId(userId);
+        Optional<Lock> lock = lockService.getMovieLockByUserId(userId);
+        if (lock.isPresent()) {
+            return lock.get();
+        } else {
+            return null;
+        }
+    }
+
+    @GET
+    @Path("user/{userId}/clip")
+    public Lock getMovieClipLockByUserId(@PathParam("userId") String userId) {
+        Optional<Lock> lock = lockService.getMovieClipLockByUserId(userId);
         if (lock.isPresent()) {
             return lock.get();
         } else {
@@ -54,12 +65,12 @@ public class LockResource {
     @POST
     @Path("movie/{movieId}/user/{userId}")
     public Lock addLock(@PathParam("movieId") String movieId, @PathParam("userId") String userId) {
-        return lockService.addLock(movieId, userId);
+        return lockService.lockMovie(movieId, userId);
     }
 
     @PUT
     @Path("movie/{movieId}/user/{userId}")
     public Lock updateLock(@PathParam("movieId") String movieId, @PathParam("userId") String userId) {
-        return lockService.updateLock(movieId, userId);
+        return lockService.updateMovieLock(movieId, userId);
     }
 }

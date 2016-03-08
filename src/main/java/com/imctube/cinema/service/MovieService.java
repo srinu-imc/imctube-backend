@@ -20,6 +20,14 @@ public class MovieService {
         return MovieDb.getMoviesClipified();
     }
 
+    public List<Movie> getMoviesToReview() {
+        return MovieDb.getMoviesToReview();
+    }
+
+    public List<Movie> getMoviesReviewed() {
+        return MovieDb.getMoviesReviewed();
+    }
+
     public List<Movie> getMovies(String artistId) {
         return MovieDb.getMovies(artistId);
     }

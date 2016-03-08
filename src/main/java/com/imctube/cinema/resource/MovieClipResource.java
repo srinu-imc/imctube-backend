@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.db.utils.Authorize;
+import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.MovieClipService;
 
@@ -43,6 +44,13 @@ public class MovieClipResource {
         } else {
             return movieClipService.getMovieClip(clipId);
         }
+    }
+
+    @GET
+    @Authorize
+    @Path("/{clipId}/artists")
+    public List<Artist> getMovieClipArtists(@PathParam("clipId") String clipId) {
+        return movieClipService.getArtists(clipId);
     }
 
     @POST

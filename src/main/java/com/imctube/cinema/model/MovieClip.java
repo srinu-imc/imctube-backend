@@ -42,6 +42,8 @@ public class MovieClip {
 
     Set<String> reviewedBy = new HashSet<String>();
 
+    boolean reviewed = false;
+
     public MovieClip() {
 
     }
@@ -148,5 +150,13 @@ public class MovieClip {
 
     public void setDialogues(List<Dialogue> dialogues) {
         this.dialogues = dialogues;
+    }
+
+    public boolean isReviewed() {
+        return reviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        this.reviewed = reviewed;
     }
 }

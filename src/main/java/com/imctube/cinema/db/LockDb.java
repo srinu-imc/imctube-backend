@@ -13,9 +13,9 @@ import com.mongodb.DBObject;
 
 public class LockDb {
 
-    public static List<Lock> getLocks() {
+    private static List<Lock> getLocks(BasicDBObject query) {
         DBCollection lockCollection = MongoDbClient.getLockCollection();
-        DBCursor cursor = lockCollection.find();
+        DBCursor cursor = lockCollection.find(query);
 
         List<Lock> lockList = new ArrayList<Lock>();
         while (cursor.hasNext()) {
@@ -24,12 +24,29 @@ public class LockDb {
         return lockList;
     }
 
+    public static List<Lock> getMovieLocks() {
+        return getLocks(new BasicDBObject("movieId", new BasicDBObject("$exists", true)));
+    }
+
+    public static List<Lock> getMovieClipLocks() {
+        return getLocks(new BasicDBObject("clipId", new BasicDBObject("$exists", true)));
+    }
+
     private static Lock getLock(DBObject object) {
         Lock lock = new Lock();
-        lock.setMovieId((String) object.get("movieId"));
-        lock.setUserId((String) object.get("userId"));
+        if (object.get("movieId") != null) {
+            lock.setMovieId((String) object.get("movieId"));
+        }
+        if (object.get("clipId") != null) {
+            lock.setClipId((String) object.get("clipId"));
+        }
+        if (object.get("userId") != null) {
+            lock.setUserId((String) object.get("userId"));
+        }
         lock.setStartAt((Date) object.get("startAt"));
-
+        if(object.get("count") != null) {
+            lock.setCount((int) object.get("count"));
+        }
         return lock;
     }
 
@@ -44,10 +61,29 @@ public class LockDb {
         }
     }
 
-    public static Optional<Lock> getLockByUserId(String userId) {
+    public static Optional<Lock> getLockByMovieClipId(String clipId) {
         DBCollection lockCollection = MongoDbClient.getLockCollection();
 
-        DBObject lock = lockCollection.findOne(new BasicDBObject("userId", userId));
+        DBObject lock = lockCollection.findOne(new BasicDBObject("clipId", clipId));
+        if (lock != null) {
+            return Optional.of(getLock(lock));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Lock> getMovieLockByUserId(String userId) {
+        return getLock(new BasicDBObject("userId", userId).append("movieId", new BasicDBObject("$exists", true)));
+    }
+
+    public static Optional<Lock> getMovieClipLockByUserId(String userId) {
+        return getLock(new BasicDBObject("userId", userId).append("clipId", new BasicDBObject("$exists", true)));
+    }
+
+    private static Optional<Lock> getLock(BasicDBObject query) {
+        DBCollection lockCollection = MongoDbClient.getLockCollection();
+
+        DBObject lock = lockCollection.findOne(query);
         if (lock != null) {
             return Optional.of(getLock(lock));
         } else {
@@ -57,8 +93,16 @@ public class LockDb {
 
     public static Lock addLock(Lock lock) {
         DBCollection lockCollection = MongoDbClient.getLockCollection();
-        DBObject dbLock = new BasicDBObject("startAt", lock.getStartAt()).append("movieId", lock.getMovieId())
-                .append("userId", lock.getUserId());
+
+        BasicDBObject dbLock = new BasicDBObject("startAt", lock.getStartAt()).append("userId", lock.getUserId());
+
+        if (lock.getMovieId() != null) {
+            dbLock.append("movieId", lock.getMovieId());
+        } else if (lock.getClipId() != null) {
+            dbLock.append("clipId", lock.getClipId());
+        }
+
+        dbLock.append("count", lock.getCount());
 
         lockCollection.insert(dbLock);
         return lock;
@@ -68,14 +112,34 @@ public class LockDb {
         DBCollection lockCollection = MongoDbClient.getLockCollection();
         lock.setStartAt(new Date());
 
-        DBObject dbLock = new BasicDBObject("startAt", lock.getStartAt()).append("movieId", lock.getMovieId())
-                .append("userId", lock.getUserId());
+        BasicDBObject dbLock = new BasicDBObject("startAt", lock.getStartAt()).append("userId", lock.getUserId());
 
-        return getLock(lockCollection.findAndModify(new BasicDBObject("movieId", lock.getMovieId()), dbLock));
+        DBObject rlock = null;
+        if (lock.getMovieId() != null) {
+            dbLock.append("movieId", lock.getMovieId());
+            rlock = lockCollection.findAndModify(new BasicDBObject("movieId", lock.getMovieId()), dbLock);
+        } else if (lock.getClipId() != null) {
+            dbLock.append("clipId", lock.getClipId());
+            rlock = lockCollection.findAndModify(new BasicDBObject("clipId", lock.getClipId()), dbLock);
+        }
+
+        return getLock(rlock);
     }
 
-    public static Lock removeLockByUserId(String userId) {
+    public static Lock removeMovieLockByUserId(String userId) {
         DBCollection lockCollection = MongoDbClient.getLockCollection();
-        return getLock(lockCollection.findAndRemove(new BasicDBObject("userId", userId)));
+        return getLock(lockCollection.findAndRemove(
+                new BasicDBObject("userId", userId).append("movieId", new BasicDBObject("$exists", true))));
+    }
+
+    public static Lock removeMovieClipLockByUserId(String userId) {
+        DBCollection lockCollection = MongoDbClient.getLockCollection();
+        return getLock(lockCollection.findAndRemove(
+                new BasicDBObject("userId", userId).append("clipId", new BasicDBObject("$exists", true))));
+    }
+
+    public static Lock removeMovieClipLockByClipId(String clipId) {
+        DBCollection lockCollection = MongoDbClient.getLockCollection();
+        return getLock(lockCollection.findAndRemove(new BasicDBObject("clipId", clipId)));
     }
 }

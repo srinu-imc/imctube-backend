@@ -15,21 +15,33 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import static java.util.Arrays.asList;
+
 import jersey.repackaged.com.google.common.collect.Sets;
 
 public class MovieDb {
 
     public static List<Movie> getMoviesClipified() {
-        return getMovies(true);
+        return getMovies(new BasicDBObject("clipified", true));
     }
 
     public static List<Movie> getMoviesToClipify() {
-        return getMovies(false);
+        return getMovies(new BasicDBObject("$or", asList(new BasicDBObject("clipified", false),
+                new BasicDBObject("clipified", new BasicDBObject("$exists", false)))));
     }
 
-    private static List<Movie> getMovies(boolean clipified) {
+    public static List<Movie> getMoviesToReview() {
+        return getMovies(new BasicDBObject("$or", asList(new BasicDBObject("reviewed", false),
+                new BasicDBObject("reviewed", new BasicDBObject("$exists", false)))));
+    }
+
+    public static List<Movie> getMoviesReviewed() {
+        return getMovies(new BasicDBObject("reviewed", true));
+    }
+
+    private static List<Movie> getMovies(BasicDBObject queryObject) {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
-        DBCursor cursor = movieCollection.find(new BasicDBObject("clipified", clipified));
+        DBCursor cursor = movieCollection.find(queryObject);
 
         List<Movie> movieList = new ArrayList<Movie>();
         while (cursor.hasNext()) {

@@ -37,6 +37,8 @@ public class Movie {
 
     private boolean clipified = false;
 
+    private boolean reviewed = false;
+
     // ClipIds populated by backend when movie clip is being added to movie.
     private Set<String> clipIds = new HashSet<String>();
 
@@ -169,5 +171,13 @@ public class Movie {
 
     public void setArtistIds(Set<String> artistIds) {
         this.artistIds = artistIds;
+    }
+
+    public boolean isReviewed() {
+        return reviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        this.reviewed = reviewed;
     }
 }

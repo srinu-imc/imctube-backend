@@ -45,7 +45,7 @@ public class ClipifyResource {
 
     @GET
     public List<Movie> getMovies(@Context final HttpServletRequest request) {
-        Optional<Lock> lock = lockService.getLockByUserId(getUser(request).getId());
+        Optional<Lock> lock = lockService.getMovieLockByUserId(getUser(request).getId());
 
         if (lock.isPresent()) {
             return ImmutableList.of(movieService.getMovie(lock.get().getMovieId()));
@@ -72,17 +72,17 @@ public class ClipifyResource {
     public MovieClip getMovie(@Context final HttpServletRequest request, @PathParam("movieId") String movieId) {
         User user = getUser(request);
 
-        Optional<Lock> lock = lockService.getLockByUserId(user.getId());
+        Optional<Lock> lock = lockService.getMovieLockByUserId(user.getId());
         if (lock.isPresent()) {
             if (lock.get().getMovieId().equals(movieId)) {
-                lockService.updateLock(movieId, user.getId());
+                lockService.updateMovieLock(movieId, user.getId());
             } else {
                 // Throw unauthorzed here (Movie shouldn't be assigned to
                 // multiple users
                 return null;
             }
         } else {
-            lockService.addLock(movieId, user.getId());
+            lockService.lockMovie(movieId, user.getId());
         }
 
         // return last clip here
@@ -93,9 +93,9 @@ public class ClipifyResource {
     @Path("/chooseAnother")
     public void chooseAnotherMovie(@Context final HttpServletRequest request) {
         User user = getUser(request);
-        Optional<Lock> lock = lockService.getLockByUserId(user.getId());
+        Optional<Lock> lock = lockService.getMovieLockByUserId(user.getId());
         if (lock.isPresent()) {
-            lockService.removeLockByUserId(lock.get().getUserId());
+            lockService.removeMovieLockByUserId(lock.get().getUserId());
         }
     }
 
@@ -103,9 +103,9 @@ public class ClipifyResource {
     @Path("/{movieId}/doneClipify")
     public void doneClipify(@Context final HttpServletRequest request, @PathParam("movieId") String movieId) {
         User user = getUser(request);
-        Optional<Lock> lock = lockService.getLockByUserId(user.getId());
+        Optional<Lock> lock = lockService.getMovieLockByUserId(user.getId());
         if (lock.isPresent()) {
-            lockService.removeLockByUserId(lock.get().getUserId());
+            lockService.removeMovieLockByUserId(lock.get().getUserId());
 
         }
         updateMovieAsClipified(movieId);
@@ -125,10 +125,10 @@ public class ClipifyResource {
 
         // Refresh lock
         if (isLastClip) {
-            lockService.removeLockByUserId(user.getId());
+            lockService.removeMovieLockByUserId(user.getId());
             updateMovieAsClipified(movieId);
         } else {
-            lockService.updateLock(movieId, user.getId());
+            lockService.updateMovieLock(movieId, user.getId());
         }
 
         return movieClipService.addMovieClip(movieId, clip);

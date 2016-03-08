@@ -17,6 +17,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import static java.util.Arrays.asList;
+
 public class MovieClipDb {
 
     public static List<MovieClip> getMovieClips() {
@@ -33,7 +35,51 @@ public class MovieClipDb {
     public static List<MovieClip> getMovieClips(String movieId) {
         DBObject query = new BasicDBObject("_id",
                 new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds())));
+        return getMovieClips(query);
+    }
 
+    public static List<MovieClip> getMovieClipsToReview(String movieId) {
+        DBObject query = new BasicDBObject("_id",
+                new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds()))).append("$or",
+                        asList(new BasicDBObject("reviewed", false),
+                                new BasicDBObject("reviewed", new BasicDBObject("$exists", false))));
+        return getMovieClips(query);
+    }
+
+    public static List<MovieClip> getMovieClipsReviewed(String movieId) {
+        DBObject query = new BasicDBObject("_id",
+                new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds()))).append("reviewed",
+                        true);
+        return getMovieClips(query);
+    }
+
+    public static Optional<MovieClip> getMovieClipByStartTimeAndMovieId(String movieId, Double startTime) {
+        DBCollection clipCollection = MongoDbClient.getClipCollection();
+
+        DBObject query = new BasicDBObject("movieId", movieId).append("startTime", startTime);
+        DBObject clip = clipCollection.findOne(query);
+
+        if (clip != null) {
+            return Optional.of(JsonToJavaConverter.parseMovieClip(clip.toString()));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<MovieClip> getMovieClipByEndTimeAndMovieId(String movieId, Double endTime) {
+        DBCollection clipCollection = MongoDbClient.getClipCollection();
+
+        DBObject query = new BasicDBObject("movieId", movieId).append("endTime", endTime);
+        DBObject clip = clipCollection.findOne(query);
+
+        if (clip != null) {
+            return Optional.of(JsonToJavaConverter.parseMovieClip(clip.toString()));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private static List<MovieClip> getMovieClips(DBObject query) {
         DBCollection clipCollection = MongoDbClient.getClipCollection();
         DBCursor cursor = clipCollection.find(query);
 

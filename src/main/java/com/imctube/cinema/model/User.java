@@ -20,6 +20,8 @@ public class User {
     public User() {
     }
 
+    public static String SYSTEM_USER_ID = "SYSTEM_USER";
+
     public User(String id, String displayName) {
         this.id = id;
         this.displayName = displayName;
