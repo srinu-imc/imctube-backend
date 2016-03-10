@@ -28,6 +28,10 @@ public class MovieService {
         return MovieDb.getMoviesReviewed();
     }
 
+    public List<Movie> getAllMovies() {
+        return MovieDb.getAllMovies();
+    }
+
     public List<Movie> getMovies(String artistId) {
         return MovieDb.getMovies(artistId);
     }

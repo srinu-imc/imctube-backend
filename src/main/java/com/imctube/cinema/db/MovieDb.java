@@ -31,12 +31,19 @@ public class MovieDb {
     }
 
     public static List<Movie> getMoviesToReview() {
-        return getMovies(new BasicDBObject("$or", asList(new BasicDBObject("reviewed", false),
-                new BasicDBObject("reviewed", new BasicDBObject("$exists", false)))));
+        return getMovies(
+                new BasicDBObject("$or",
+                        asList(new BasicDBObject("reviewed", false),
+                                new BasicDBObject("reviewed", new BasicDBObject("$exists", false)))).append("clipified",
+                                        true));
     }
 
     public static List<Movie> getMoviesReviewed() {
         return getMovies(new BasicDBObject("reviewed", true));
+    }
+
+    public static List<Movie> getAllMovies() {
+        return getMovies(new BasicDBObject());
     }
 
     private static List<Movie> getMovies(BasicDBObject queryObject) {

@@ -34,6 +34,13 @@ public class MovieResource {
     }
 
     @GET
+    @Authorize
+    @Path("/all")
+    public List<Movie> getAllMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @GET
     @Path("/{movieId}")
     public Movie getMovie(@PathParam("movieId") String movieId) {
         return movieService.getMovie(movieId);
