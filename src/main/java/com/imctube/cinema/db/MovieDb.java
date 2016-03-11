@@ -99,6 +99,7 @@ public class MovieDb {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
         Movie existingMovie = getMovie(movie.getId());
         movie.setClipIds(Sets.union(movie.getClipIdSet(), existingMovie.getClipIdSet()));
+        movie.setArtistIds(Sets.union(movie.getArtistIdSet(), existingMovie.getArtistIdSet()));
 
         return JsonToJavaConverter
                 .parseMovie(
