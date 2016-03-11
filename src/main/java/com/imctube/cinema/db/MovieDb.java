@@ -75,6 +75,13 @@ public class MovieDb {
                 .parseMovie(movieCollection.findOne(new BasicDBObject("_id", new ObjectId(movieId))).toString());
     }
 
+    public static Movie getMovieByVideoId(String videoId) {
+        DBCollection movieCollection = MongoDbClient.getMovieCollection();
+
+        return JsonToJavaConverter
+                .parseMovie(movieCollection.findOne(new BasicDBObject("videoId", videoId)).toString());
+    }
+
     public static Movie addMovie(Movie movie) {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
 

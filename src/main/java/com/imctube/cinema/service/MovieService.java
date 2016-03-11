@@ -40,6 +40,10 @@ public class MovieService {
         return MovieDb.getMovie(movieId);
     }
 
+    public Movie getMovieByVideoId(String videoId) {
+        return MovieDb.getMovieByVideoId(videoId);
+    }
+
     public Movie addMovie(Movie movie) {
         return MovieDb.addMovie(movie);
     }
