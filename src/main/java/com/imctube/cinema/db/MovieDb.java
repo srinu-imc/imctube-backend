@@ -48,7 +48,7 @@ public class MovieDb {
 
     private static List<Movie> getMovies(BasicDBObject queryObject) {
         DBCollection movieCollection = MongoDbClient.getMovieCollection();
-        DBCursor cursor = movieCollection.find(queryObject);
+        DBCursor cursor = movieCollection.find(queryObject).sort(new BasicDBObject("name", 1));
 
         List<Movie> movieList = new ArrayList<Movie>();
         while (cursor.hasNext()) {
@@ -58,8 +58,10 @@ public class MovieDb {
     }
 
     public static List<Movie> getMovies(String artistId) {
-        DBCursor cursor = MongoDbClient.getMovieCollection().find(new BasicDBObject("_id",
-                new BasicDBObject("$in", Util.getObjectIds(ArtistDb.getArtist(artistId).getMovieIds()))));
+        DBCursor cursor = MongoDbClient.getMovieCollection()
+                .find(new BasicDBObject("_id",
+                        new BasicDBObject("$in", Util.getObjectIds(ArtistDb.getArtist(artistId).getMovieIds()))))
+                .sort(new BasicDBObject("name", 1));
 
         List<Movie> movieList = new ArrayList<Movie>();
         while (cursor.hasNext()) {

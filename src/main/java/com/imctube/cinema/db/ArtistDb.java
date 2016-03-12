@@ -23,7 +23,7 @@ public class ArtistDb {
 
     public static List<Artist> getArtists(boolean onlyHaveMovies) {
         DBCollection artistCollection = MongoDbClient.getArtistCollection();
-        DBCursor cursor = artistCollection.find();
+        DBCursor cursor = artistCollection.find().sort(new BasicDBObject("industryName", 1));
 
         List<Artist> artistList = new ArrayList<Artist>();
         while (cursor.hasNext()) {
@@ -39,8 +39,10 @@ public class ArtistDb {
     public static List<Artist> getArtists(Set<String> artistIds) {
         DBCollection artistCollection = MongoDbClient.getArtistCollection();
 
-        DBCursor cursor = artistCollection.find(
-                new BasicDBObject("_id", new BasicDBObject("$in", Util.getObjectIds(Lists.newArrayList(artistIds)))));
+        DBCursor cursor = artistCollection
+                .find(new BasicDBObject("_id",
+                        new BasicDBObject("$in", Util.getObjectIds(Lists.newArrayList(artistIds)))))
+                .sort(new BasicDBObject("industryName", 1));
 
         List<Artist> artistList = new ArrayList<Artist>();
         while (cursor.hasNext()) {

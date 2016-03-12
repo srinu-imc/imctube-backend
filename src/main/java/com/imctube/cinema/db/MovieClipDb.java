@@ -23,7 +23,7 @@ public class MovieClipDb {
 
     public static List<MovieClip> getMovieClips() {
         DBCollection clipCollection = MongoDbClient.getClipCollection();
-        DBCursor cursor = clipCollection.find();
+        DBCursor cursor = clipCollection.find().sort(new BasicDBObject("startTime", 1));
 
         List<MovieClip> clips = new ArrayList<MovieClip>();
         while (cursor.hasNext()) {
@@ -81,7 +81,7 @@ public class MovieClipDb {
 
     private static List<MovieClip> getMovieClips(DBObject query) {
         DBCollection clipCollection = MongoDbClient.getClipCollection();
-        DBCursor cursor = clipCollection.find(query);
+        DBCursor cursor = clipCollection.find(query).sort(new BasicDBObject("startTime", 1));
 
         List<MovieClip> clips = new ArrayList<MovieClip>();
         while (cursor.hasNext()) {
@@ -105,7 +105,7 @@ public class MovieClipDb {
                 .append("artistIds", artistId);
 
         DBCollection clipCollection = MongoDbClient.getClipCollection();
-        DBCursor cursor = clipCollection.find(query);
+        DBCursor cursor = clipCollection.find(query).sort(new BasicDBObject("startTime", 1));
 
         List<MovieClip> clips = new ArrayList<MovieClip>();
         while (cursor.hasNext()) {
@@ -120,7 +120,7 @@ public class MovieClipDb {
                         artistId);
 
         DBCollection clipCollection = MongoDbClient.getClipCollection();
-        DBCursor cursor = clipCollection.find(query);
+        DBCursor cursor = clipCollection.find(query).sort(new BasicDBObject("startTime", 1));
 
         List<MovieClip> clips = new ArrayList<MovieClip>();
         while (cursor.hasNext()) {
