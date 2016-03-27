@@ -48,8 +48,9 @@ public class AuthResource {
             UNLINK_ERROR_MSG = "Could not unlink %s account because it is your only sign-in method";
 
     private static final Client client = ClientBuilder.newClient();
-    private static final String FB_SECRET = "ec0aa5dff58f304acaef53a58115b1d2";
-    private static final String GOOGLE_SECRET = "";
+    private static final String FB_SECRET = "3aba0ce25c097f51618eff27e3bc8f23";
+    // private static final String FB_SECRET = "ec0aa5dff58f304acaef53a58115b1d2";
+    private static final String GOOGLE_SECRET = "lvDp2NUP2A3ztnzOfp2TB19H";
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
     @POST
