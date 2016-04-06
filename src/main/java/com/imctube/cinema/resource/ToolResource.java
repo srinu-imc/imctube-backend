@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,7 +17,9 @@ import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.Movie;
+import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.ArtistService;
+import com.imctube.cinema.service.MovieClipService;
 import com.imctube.cinema.service.MovieService;
 
 import jersey.repackaged.com.google.common.collect.Lists;
@@ -30,6 +33,7 @@ public class ToolResource {
 
     private static ArtistService artistService = new ArtistService();
     private static MovieService movieService = new MovieService();
+    private static MovieClipService movieClipService = new MovieClipService();
 
     @PUT
     @Path("/artists/{artistId}/movies/{movieId}")
@@ -115,6 +119,29 @@ public class ToolResource {
         if (movie.getThumbnailCount() == 0) {
             movie.setThumbnailCount(count);
             movieService.updateMovie(movie.getId(), movie);
+        }
+    }
+
+    @POST
+    @Path("/changeUrl")
+    public void updateUrl() {
+        List<Artist> artists = artistService.getArtists(false);
+        for (Artist artist : artists) {
+            if (artist.getThumbnail() != null) {
+                artist.setThumbnail(artist.getThumbnail().replace("resources", "https://s3.amazonaws.com/imctube"));
+                artistService.updateArtist(artist.getId(), artist);
+            }
+        }
+
+        List<MovieClip> movieClips = movieClipService.getMovieClips();
+        for (MovieClip movieClip : movieClips) {
+            Set<String> thumbnails = movieClip.getThumbnails();
+            Set<String> newThumbnails = Sets.newHashSet();
+            for (String thumbnail : thumbnails) {
+                newThumbnails.add(thumbnail.replace("resources", "https://s3.amazonaws.com/imctube"));
+            }
+            movieClip.setThumbnails(newThumbnails);
+            movieClipService.updateMovieClip(movieClip.getClipId(), movieClip);
         }
     }
 }
