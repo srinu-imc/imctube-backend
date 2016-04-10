@@ -19,6 +19,7 @@ import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.ArtistService;
+import com.imctube.cinema.service.ClipViewCountService;
 import com.imctube.cinema.service.MovieClipService;
 import com.imctube.cinema.service.MovieService;
 
@@ -34,6 +35,7 @@ public class ToolResource {
     private static ArtistService artistService = new ArtistService();
     private static MovieService movieService = new MovieService();
     private static MovieClipService movieClipService = new MovieClipService();
+    private static ClipViewCountService clipViewCountService = new ClipViewCountService();
 
     @PUT
     @Path("/artists/{artistId}/movies/{movieId}")
@@ -133,7 +135,8 @@ public class ToolResource {
             }
         }
 
-        List<MovieClip> movieClips = movieClipService.getMovieClips();
+        // TODO: Change to get all clips
+        List<MovieClip> movieClips = movieClipService.getMovieClips(0);
         for (MovieClip movieClip : movieClips) {
             Set<String> thumbnails = movieClip.getThumbnails();
             Set<String> newThumbnails = Sets.newHashSet();
@@ -142,6 +145,15 @@ public class ToolResource {
             }
             movieClip.setThumbnails(newThumbnails);
             movieClipService.updateMovieClip(movieClip.getClipId(), movieClip);
+        }
+    }
+
+    @POST
+    @Path("/initViewCount")
+    public void initViewCount() {
+        List<MovieClip> clips = movieClipService.getMovieClips();
+        for (MovieClip clip : clips) {
+            clipViewCountService.incrClipViewCount(clip.getClipId());
         }
     }
 }

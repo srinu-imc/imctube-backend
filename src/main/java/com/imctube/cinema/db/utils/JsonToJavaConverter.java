@@ -5,6 +5,9 @@ import java.text.DateFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.imctube.cinema.model.Artist;
+import com.imctube.cinema.model.ClipViewCount;
+import com.imctube.cinema.model.ClipViewLast2Min;
+import com.imctube.cinema.model.ClipViewLog;
 import com.imctube.cinema.model.ErrorMessage;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
@@ -37,5 +40,17 @@ public class JsonToJavaConverter {
 
     public static ErrorMessage parseErrorMessage(String message) {
         return gson.fromJson(message, ErrorMessage.class);
+    }
+
+    public static ClipViewCount parseClipViewCount(String clipViewCount) {
+        return gson.fromJson(clipViewCount, ClipViewCount.class);
+    }
+
+    public static ClipViewLast2Min parseClipViewLast2Min(String clipViewLast2Min) {
+        return gson.fromJson(clipViewLast2Min, ClipViewLast2Min.class);
+    }
+
+    public static ClipViewLog parseClipViewLog(String clipViewLog) {
+        return gson.fromJson(clipViewLog, ClipViewLog.class);
     }
 }

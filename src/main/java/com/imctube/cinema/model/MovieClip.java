@@ -44,6 +44,8 @@ public class MovieClip {
 
     boolean reviewed = false;
 
+    long viewCount = 0;
+
     public MovieClip() {
 
     }
@@ -158,5 +160,13 @@ public class MovieClip {
 
     public void setReviewed(boolean reviewed) {
         this.reviewed = reviewed;
+    }
+
+    public long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(long viewCount) {
+        this.viewCount = viewCount;
     }
 }

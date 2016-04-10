@@ -35,7 +35,12 @@ public class MovieClipDb {
     public static List<MovieClip> getMovieClips(String movieId) {
         DBObject query = new BasicDBObject("_id",
                 new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds())));
-        return getMovieClips(query);
+        return getMovieClips(query, true);
+    }
+
+    public static List<MovieClip> getMovieClips(List<String> clipIds) {
+        DBObject query = new BasicDBObject("_id", new BasicDBObject("$in", Util.getObjectIds(clipIds)));
+        return getMovieClips(query, false);
     }
 
     public static List<MovieClip> getMovieClipsToReview(String movieId) {
@@ -43,14 +48,14 @@ public class MovieClipDb {
                 new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds()))).append("$or",
                         asList(new BasicDBObject("reviewed", false),
                                 new BasicDBObject("reviewed", new BasicDBObject("$exists", false))));
-        return getMovieClips(query);
+        return getMovieClips(query, true);
     }
 
     public static List<MovieClip> getMovieClipsReviewed(String movieId) {
         DBObject query = new BasicDBObject("_id",
                 new BasicDBObject("$in", Util.getObjectIds(MovieDb.getMovie(movieId).getClipIds()))).append("reviewed",
                         true);
-        return getMovieClips(query);
+        return getMovieClips(query, true);
     }
 
     public static Optional<MovieClip> getMovieClipByStartTimeAndMovieId(String movieId, Double startTime) {
@@ -79,9 +84,14 @@ public class MovieClipDb {
         }
     }
 
-    private static List<MovieClip> getMovieClips(DBObject query) {
+    private static List<MovieClip> getMovieClips(DBObject query, boolean sortByStartTime) {
         DBCollection clipCollection = MongoDbClient.getClipCollection();
-        DBCursor cursor = clipCollection.find(query).sort(new BasicDBObject("startTime", 1));
+        DBCursor cursor;
+        if (sortByStartTime) {
+            cursor = clipCollection.find(query).sort(new BasicDBObject("startTime", 1));
+        } else {
+            cursor = clipCollection.find(query);
+        }
 
         List<MovieClip> clips = new ArrayList<MovieClip>();
         while (cursor.hasNext()) {
