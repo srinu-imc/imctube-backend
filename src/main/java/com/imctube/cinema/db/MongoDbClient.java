@@ -19,8 +19,8 @@ public class MongoDbClient {
     private static synchronized MongoClient getMongoInstance() {
         if (mongo == null) {
             try {
-                mongo = new MongoClient("52.32.130.17", 27017);
-                // mongo = new MongoClient("localhost", 27017);
+                //mongo = new MongoClient("52.32.130.17", 27017);
+                mongo = new MongoClient("localhost", 27017);
             } catch (UnknownHostException e) {
                 logger.error("Failed to connect to mongo server");
             }

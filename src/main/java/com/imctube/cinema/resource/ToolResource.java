@@ -118,10 +118,8 @@ public class ToolResource {
             @QueryParam("count") int count) {
 
         Movie movie = movieService.getMovieByVideoId(videoId);
-        if (movie.getThumbnailCount() == 0) {
-            movie.setThumbnailCount(count);
-            movieService.updateMovie(movie.getId(), movie);
-        }
+        movie.setThumbnailCount(count);
+        movieService.updateMovie(movie.getId(), movie);
     }
 
     @POST

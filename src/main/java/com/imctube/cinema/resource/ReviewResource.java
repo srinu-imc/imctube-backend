@@ -62,7 +62,9 @@ public class ReviewResource {
 
         Set<String> lockedClipIds = lockService.getLockedMovieClipIds();
         List<MovieClip> rClips = Lists.newArrayList();
-        for (MovieClip clip : movieClipService.getMovieClipsToReview(movieId)) {
+        // for (MovieClip clip : movieClipService.getMovieClipsToReview(movieId)) {
+        // TODO: remove this (Open all clips for review till we fix all the clip thumbnails
+        for(MovieClip clip: movieClipService.getMovieClips(movieId)) {
             if (!lockedClipIds.contains(clip.getClipId())) {
                 rClips.add(clip);
             }
