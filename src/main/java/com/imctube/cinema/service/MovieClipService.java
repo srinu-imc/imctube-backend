@@ -68,6 +68,9 @@ public class MovieClipService {
                 return (int) (c2.getViewCount() - c1.getViewCount());
             }
         });
+        System.out.println("Page clip count" + clipIdToViewCount.size());
+        System.out.println("Returned clips count" + clips.size());
+        System.out.println(clipIdToViewCount);
         return clips;
     }
 
@@ -127,17 +130,17 @@ public class MovieClipService {
         }
     }
 
-    public MovieClip getMovieClip(String clipId) {
+    public Optional<MovieClip> getMovieClip(String clipId) {
         return MovieClipDb.getMovieClip(clipId);
     }
 
     public Optional<MovieClip> getPrevMovieClip(String clipId) {
-        MovieClip current = getMovieClip(clipId);
+        MovieClip current = getMovieClip(clipId).get();
         return MovieClipDb.getMovieClipByEndTimeAndMovieId(current.getMovieId(), current.getStartTime());
     }
 
     public Optional<MovieClip> getNextMovieClip(String clipId) {
-        MovieClip current = getMovieClip(clipId);
+        MovieClip current = getMovieClip(clipId).get();
         return MovieClipDb.getMovieClipByStartTimeAndMovieId(current.getMovieId(), current.getEndTime());
     }
 
@@ -159,7 +162,7 @@ public class MovieClipService {
     }
 
     public List<Artist> getArtists(String clipId) {
-        MovieClip clip = getMovieClip(clipId);
+        MovieClip clip = getMovieClip(clipId).get();
         return ArtistDb.getArtists(clip.getArtistIds());
     }
 }

@@ -69,7 +69,7 @@ public class MovieClipResource {
             clipViewLogService.addClipViewLog(clipId, host, null);
         }
 
-        return movieClipService.getMovieClip(clipId);
+        return movieClipService.getMovieClip(clipId).get();
     }
 
     @GET

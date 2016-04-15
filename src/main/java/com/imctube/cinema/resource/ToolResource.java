@@ -1,6 +1,7 @@
 package com.imctube.cinema.resource;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.model.Artist;
+import com.imctube.cinema.model.ClipViewCount;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.ArtistService;
@@ -152,6 +154,18 @@ public class ToolResource {
         List<MovieClip> clips = movieClipService.getMovieClips();
         for (MovieClip clip : clips) {
             clipViewCountService.incrClipViewCount(clip.getClipId());
+        }
+    }
+
+    @POST
+    @Path("/cleanupViewCount")
+    public void cleanupViewCount() {
+        List<ClipViewCount> viewCounts = clipViewCountService.getClipViewCounts();
+        for (ClipViewCount viewCount : viewCounts) {
+            Optional<MovieClip> movieClip = movieClipService.getMovieClip(viewCount.getClipId());
+            if (!movieClip.isPresent()) {
+                clipViewCountService.removeClipViewCount(viewCount.getClipId());
+            }
         }
     }
 }

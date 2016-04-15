@@ -26,4 +26,8 @@ public class ClipViewCountService {
     public void incrClipViewCount(String clipId) {
         ClipViewCountDb.incrClipViewCount(clipId);
     }
+
+    public void removeClipViewCount(String clipId) {
+        ClipViewCountDb.removeClipViewCount(clipId);
+    }
 }

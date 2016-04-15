@@ -108,7 +108,7 @@ public class ReviewResource {
             lockService.lockMovieClip(clipId, user.getId());
             lockAdjacentClips(clipId);
         }
-        return movieClipService.getMovieClip(clipId);
+        return movieClipService.getMovieClip(clipId).get();
     }
 
     @PUT

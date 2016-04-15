@@ -54,4 +54,9 @@ public class ClipViewCountDb {
             clipViewCountCollection.insert(new BasicDBObject("clipId", clipId).append("count", 1));
         }
     }
+
+    public static void removeClipViewCount(String clipId) {
+        DBCollection clipViewCountCollection = MongoDbClient.getClipViewCountCollection();
+        clipViewCountCollection.remove(new BasicDBObject("clipId", clipId));
+    }
 }

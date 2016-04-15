@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.imctube.cinema.db.utils.Authorize;
 import com.imctube.cinema.model.ClipViewLast2Min;
 import com.imctube.cinema.service.ClipViewLast2MinService;
 
@@ -25,12 +24,6 @@ public class ClipViewLast2MinResource {
     @GET
     public List<ClipViewLast2Min> getClipViewCounts() {
         return clipViewLast2MinService.getClipViewLast2Mins();
-    }
-
-    @GET
-    @Path("/{clipId}/{host}")
-    public void isClipVIewedLast2Min(@PathParam("clipId") String clipId, @PathParam("host") String host) {
-        System.out.println(clipViewLast2MinService.isViewedInLast2Min(clipId, host));
     }
 
     @POST

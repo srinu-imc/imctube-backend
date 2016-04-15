@@ -153,15 +153,18 @@ public class MovieClipDb {
         }
     }
 
-    public static MovieClip getMovieClip(String clipId) {
+    public static Optional<MovieClip> getMovieClip(String clipId) {
         DBCollection clipCollection = MongoDbClient.getClipCollection();
+        DBObject dbClip = clipCollection.findOne(new BasicDBObject("_id", new ObjectId(clipId)));
 
-        return JsonToJavaConverter
-                .parseMovieClip(clipCollection.findOne(new BasicDBObject("_id", new ObjectId(clipId))).toString());
+        if (dbClip != null) {
+            return Optional.of(JsonToJavaConverter.parseMovieClip(dbClip.toString()));
+        }
+        return Optional.empty();
     }
 
     public static MovieClip tagArtistToMovieClip(String clipId, String artistId) {
-        MovieClip clip = getMovieClip(clipId);
+        MovieClip clip = getMovieClip(clipId).get();
         clip.addArtistId(artistId);
         return updateMovieClip(clip);
     }
