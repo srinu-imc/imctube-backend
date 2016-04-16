@@ -8,6 +8,7 @@ import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.ErrorMessage;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
+import com.imctube.cinema.model.TinyUrl;
 import com.imctube.cinema.model.Token;
 import com.imctube.cinema.model.User;
 
@@ -33,6 +34,10 @@ public class JsonToJavaConverter {
 
     public static User parseUser(String user) {
         return gson.fromJson(user, User.class);
+    }
+
+    public static TinyUrl parseTinyurl(String tinyUrlObject) {
+        return gson.fromJson(tinyUrlObject, TinyUrl.class);
     }
 
     public static ErrorMessage parseErrorMessage(String message) {
