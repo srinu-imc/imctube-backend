@@ -1,11 +1,13 @@
 package com.imctube.cinema.resource;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,8 +17,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.model.Artist;
+import com.imctube.cinema.model.ClipViewCount;
 import com.imctube.cinema.model.Movie;
+import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.ArtistService;
+import com.imctube.cinema.service.ClipViewCountService;
+import com.imctube.cinema.service.MovieClipService;
 import com.imctube.cinema.service.MovieService;
 
 import jersey.repackaged.com.google.common.collect.Lists;
@@ -30,6 +36,8 @@ public class ToolResource {
 
     private static ArtistService artistService = new ArtistService();
     private static MovieService movieService = new MovieService();
+    private static MovieClipService movieClipService = new MovieClipService();
+    private static ClipViewCountService clipViewCountService = new ClipViewCountService();
 
     @PUT
     @Path("/artists/{artistId}/movies/{movieId}")
@@ -112,9 +120,52 @@ public class ToolResource {
             @QueryParam("count") int count) {
 
         Movie movie = movieService.getMovieByVideoId(videoId);
-        if (movie.getThumbnailCount() == 0) {
-            movie.setThumbnailCount(count);
-            movieService.updateMovie(movie.getId(), movie);
+        movie.setThumbnailCount(count);
+        movieService.updateMovie(movie.getId(), movie);
+    }
+
+    @POST
+    @Path("/changeUrl")
+    public void updateUrl() {
+        List<Artist> artists = artistService.getArtists(false);
+        for (Artist artist : artists) {
+            if (artist.getThumbnail() != null) {
+                artist.setThumbnail(artist.getThumbnail().replace("resources", "https://s3.amazonaws.com/imctube"));
+                artistService.updateArtist(artist.getId(), artist);
+            }
+        }
+
+        // TODO: Change to get all clips
+        List<MovieClip> movieClips = movieClipService.getMovieClips(0);
+        for (MovieClip movieClip : movieClips) {
+            Set<String> thumbnails = movieClip.getThumbnails();
+            Set<String> newThumbnails = Sets.newHashSet();
+            for (String thumbnail : thumbnails) {
+                newThumbnails.add(thumbnail.replace("resources", "https://s3.amazonaws.com/imctube"));
+            }
+            movieClip.setThumbnails(newThumbnails);
+            movieClipService.updateMovieClip(movieClip.getClipId(), movieClip);
+        }
+    }
+
+    @POST
+    @Path("/initViewCount")
+    public void initViewCount() {
+        List<MovieClip> clips = movieClipService.getMovieClips();
+        for (MovieClip clip : clips) {
+            clipViewCountService.incrClipViewCount(clip.getClipId());
+        }
+    }
+
+    @POST
+    @Path("/cleanupViewCount")
+    public void cleanupViewCount() {
+        List<ClipViewCount> viewCounts = clipViewCountService.getClipViewCounts();
+        for (ClipViewCount viewCount : viewCounts) {
+            Optional<MovieClip> movieClip = movieClipService.getMovieClip(viewCount.getClipId());
+            if (!movieClip.isPresent()) {
+                clipViewCountService.removeClipViewCount(viewCount.getClipId());
+            }
         }
     }
 }

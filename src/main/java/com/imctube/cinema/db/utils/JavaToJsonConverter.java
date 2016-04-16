@@ -2,6 +2,7 @@ package com.imctube.cinema.db.utils;
 
 import com.google.gson.Gson;
 import com.imctube.cinema.model.Artist;
+import com.imctube.cinema.model.ClipViewLog;
 import com.imctube.cinema.model.ErrorMessage;
 import com.imctube.cinema.model.Lock;
 import com.imctube.cinema.model.Movie;
@@ -43,5 +44,9 @@ public class JavaToJsonConverter {
 
     public static String covert(Lock lock) {
         return gson.toJson(lock);
+    }
+
+    public static String covert(ClipViewLog clipViewLog) {
+        return gson.toJson(clipViewLog);
     }
 }

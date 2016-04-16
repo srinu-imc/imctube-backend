@@ -23,6 +23,7 @@ import com.imctube.cinema.model.Lock;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.model.User;
+import com.imctube.cinema.service.ArtistService;
 import com.imctube.cinema.service.LockService;
 import com.imctube.cinema.service.MovieClipService;
 import com.imctube.cinema.service.MovieService;
@@ -39,6 +40,7 @@ public class ReviewResource {
 
     private static MovieService movieService = new MovieService();
     private static MovieClipService movieClipService = new MovieClipService();
+    private static ArtistService artistService = new ArtistService();
     private static LockService lockService = new LockService();
     private static UserService userService = new UserService();
 
@@ -60,7 +62,9 @@ public class ReviewResource {
 
         Set<String> lockedClipIds = lockService.getLockedMovieClipIds();
         List<MovieClip> rClips = Lists.newArrayList();
-        for (MovieClip clip : movieClipService.getMovieClipsToReview(movieId)) {
+        // for (MovieClip clip : movieClipService.getMovieClipsToReview(movieId)) {
+        // TODO: remove this (Open all clips for review till we fix all the clip thumbnails
+        for(MovieClip clip: movieClipService.getMovieClips(movieId)) {
             if (!lockedClipIds.contains(clip.getClipId())) {
                 rClips.add(clip);
             }
@@ -70,6 +74,12 @@ public class ReviewResource {
         }
 
         return rClips;
+    }
+
+    @GET
+    @Path("/{clipId}/prev")
+    public MovieClip getPrevClip(@PathParam("clipId") String clipId) {
+        return movieClipService.getPrevMovieClip(clipId).get();
     }
 
     @POST
@@ -98,7 +108,7 @@ public class ReviewResource {
             lockService.lockMovieClip(clipId, user.getId());
             lockAdjacentClips(clipId);
         }
-        return movieClipService.getMovieClip(clipId);
+        return movieClipService.getMovieClip(clipId).get();
     }
 
     @PUT
@@ -122,6 +132,26 @@ public class ReviewResource {
         } else if (option.equals("markAsReviewed")) {
             fullyReviewedMarkAsReviewed(originalClip, user.getId());
         }
+
+        Set<String> artistIds = originalClip.getArtistIds();
+        if (newClip != null) {
+            artistIds.addAll(newClip.getArtistIds());
+        }
+        updateArtist(originalClip.getMovieId(), artistIds);
+    }
+
+    private void updateArtist(String movieId, Set<String> artistIds) {
+        for (String artistId : artistIds) {
+            artistService.addMovie(artistId, movieId);
+        }
+        updateMovieArtists(movieId, artistIds);
+    }
+
+    private void updateMovieArtists(String movieId, Set<String> artistIds) {
+        Movie movie = movieService.getMovie(movieId);
+        Set<String> existingArtists = movie.getArtistIdSet();
+        movie.setArtistIds(Sets.union(artistIds, existingArtists));
+        movieService.updateMovie(movieId, movie);
     }
 
     private void partialReviewAddNewClip(MovieClip originalClip, MovieClip newClip) {

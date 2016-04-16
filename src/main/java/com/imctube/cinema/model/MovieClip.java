@@ -44,6 +44,20 @@ public class MovieClip {
 
     boolean reviewed = false;
 
+    boolean comedy = false;
+
+    boolean song = false;
+
+    boolean fight = false;
+
+    boolean climaxScene = false;
+
+    boolean otherType = false;
+
+    boolean titles = false;
+
+    long viewCount = 0;
+
     public MovieClip() {
 
     }
@@ -158,5 +172,61 @@ public class MovieClip {
 
     public void setReviewed(boolean reviewed) {
         this.reviewed = reviewed;
+    }
+
+    public long getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(long viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public boolean isComedy() {
+        return comedy;
+    }
+
+    public void setComedy(boolean comedy) {
+        this.comedy = comedy;
+    }
+
+    public boolean isSong() {
+        return song;
+    }
+
+    public void setSong(boolean song) {
+        this.song = song;
+    }
+
+    public boolean isFight() {
+        return fight;
+    }
+
+    public void setFight(boolean fight) {
+        this.fight = fight;
+    }
+
+    public boolean isClimaxScene() {
+        return climaxScene;
+    }
+
+    public void setClimaxScene(boolean climaxScene) {
+        this.climaxScene = climaxScene;
+    }
+
+    public boolean isOtherType() {
+        return otherType;
+    }
+
+    public void setOtherType(boolean otherType) {
+        this.otherType = otherType;
+    }
+
+    public boolean isTitles() {
+        return titles;
+    }
+
+    public void setTitles(boolean titles) {
+        this.titles = titles;
     }
 }
