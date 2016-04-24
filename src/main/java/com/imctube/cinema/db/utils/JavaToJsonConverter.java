@@ -7,6 +7,7 @@ import com.imctube.cinema.model.ErrorMessage;
 import com.imctube.cinema.model.Lock;
 import com.imctube.cinema.model.Movie;
 import com.imctube.cinema.model.MovieClip;
+import com.imctube.cinema.model.TinyUrl;
 import com.imctube.cinema.model.Token;
 import com.imctube.cinema.model.User;
 
@@ -30,6 +31,10 @@ public class JavaToJsonConverter {
     }
 
     public static String convert(Token token) {
+        return gson.toJson(token);
+    }
+
+	public static String convert(TinyUrl token) {
         return gson.toJson(token);
     }
 
