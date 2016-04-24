@@ -136,7 +136,7 @@ public class ToolResource {
         }
 
         // TODO: Change to get all clips
-        List<MovieClip> movieClips = movieClipService.getMovieClips(0);
+        List<MovieClip> movieClips = movieClipService.getMovieClips();
         for (MovieClip movieClip : movieClips) {
             Set<String> thumbnails = movieClip.getThumbnails();
             Set<String> newThumbnails = Sets.newHashSet();
@@ -166,6 +166,27 @@ public class ToolResource {
             if (!movieClip.isPresent()) {
                 clipViewCountService.removeClipViewCount(viewCount.getClipId());
             }
+        }
+    }
+
+    @POST
+    @Path("/changeVideoId")
+    public void changeVideoId(@QueryParam("from") String fromVideoId, @QueryParam("to") String toVideoId) {
+        // Update movie model
+        Movie movie = movieService.getMovieByVideoId(fromVideoId);
+        movie.setVideoId(toVideoId);
+        movieService.updateMovie(movie.getId(), movie);
+
+        List<MovieClip> clips = movieClipService.getMovieClips(movie.getId());
+        for (MovieClip clip : clips) {
+            clip.setVideoId(toVideoId);
+            Set<String> newThumbnails = Sets.newHashSet();
+
+            for (String thumbnail : clip.getThumbnails()) {
+                newThumbnails.add(thumbnail.replace(fromVideoId, toVideoId));
+            }
+            clip.setThumbnails(newThumbnails);
+            movieClipService.updateMovieClip(clip.getClipId(), clip);
         }
     }
 }

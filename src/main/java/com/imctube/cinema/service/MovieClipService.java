@@ -12,6 +12,7 @@ import com.imctube.cinema.db.ArtistDb;
 import com.imctube.cinema.db.MovieClipDb;
 import com.imctube.cinema.model.Artist;
 import com.imctube.cinema.model.ClipViewCount;
+import com.imctube.cinema.model.GetMovieClipsResponse;
 import com.imctube.cinema.model.MovieClip;
 
 import jersey.repackaged.com.google.common.collect.Lists;
@@ -46,13 +47,17 @@ public class MovieClipService {
         return MovieClipDb.getMovieClips();
     }
 
-    public List<MovieClip> getMovieClips(int page) {
+    public GetMovieClipsResponse getMovieClips(int page) {
         String artistId = "all";
 
         if (!actorToClipViewCount.containsKey(artistId)) {
             actorToClipViewCount.put("all", clipViewCountService.getClipViewCounts());
         }
-        return getMovieClips(page, artistId);
+
+        GetMovieClipsResponse response = new GetMovieClipsResponse();
+        response.setClips(getMovieClips(page, artistId));
+        response.setHasMoreClips(!isLastPage(artistId, page));
+        return response;
     }
 
     private List<MovieClip> getMovieClips(int page, String artistId) {
@@ -68,10 +73,15 @@ public class MovieClipService {
                 return (int) (c2.getViewCount() - c1.getViewCount());
             }
         });
-        System.out.println("Page clip count" + clipIdToViewCount.size());
-        System.out.println("Returned clips count" + clips.size());
-        System.out.println(clipIdToViewCount);
+
         return clips;
+    }
+
+    private boolean isLastPage(String actor, int currentPage) {
+        if (actorToClipViewCount.get(actor).size() / PAGE_SIZE == currentPage) {
+            return true;
+        }
+        return false;
     }
 
     private Map<String, Long> getPageClipIdToViewCount(int page, String actor) {
@@ -96,13 +106,16 @@ public class MovieClipService {
         return clipIds;
     }
 
-    public List<MovieClip> getArtistMovieClips(String artistId, int page) {
+    public GetMovieClipsResponse getArtistMovieClips(String artistId, int page) {
 
         if (!actorToClipViewCount.containsKey(artistId)) {
             List<MovieClip> artistClips = MovieClipDb.getArtistMovieClips(artistId);
             actorToClipViewCount.put(artistId, clipViewCountService.getClipViewCounts(getMovieClipIds(artistClips)));
         }
-        return getMovieClips(page, artistId);
+        GetMovieClipsResponse response = new GetMovieClipsResponse();
+        response.setClips(getMovieClips(page, artistId));
+        response.setHasMoreClips(!isLastPage(artistId, page));
+        return response;
     }
 
     public List<MovieClip> getMovieClips(String movieId) {
@@ -158,6 +171,7 @@ public class MovieClipService {
     }
 
     public MovieClip removeMovieClip(String movieClipId) {
+        clipViewCountService.removeClipViewCount(movieClipId);
         return MovieClipDb.removeMovieClip(movieClipId);
     }
 

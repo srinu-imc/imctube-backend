@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.imctube.cinema.db.utils.Authorize;
 import com.imctube.cinema.model.Artist;
+import com.imctube.cinema.model.GetMovieClipsResponse;
 import com.imctube.cinema.model.MovieClip;
 import com.imctube.cinema.service.ClipViewCountService;
 import com.imctube.cinema.service.ClipViewLast2MinService;
@@ -33,21 +34,26 @@ public class MovieClipResource {
     private static ClipViewCountService clipViewCountService = new ClipViewCountService();
 
     @GET
-    public List<MovieClip> getMovieClips(@PathParam("artistId") String artistId, @PathParam("movieId") String movieId,
-            @QueryParam("page") int page, @QueryParam("allClips") boolean allClips) {
+    public GetMovieClipsResponse getMovieClips(@PathParam("artistId") String artistId,
+            @PathParam("movieId") String movieId, @QueryParam("page") int page,
+            @QueryParam("allClips") boolean allClips) {
+        GetMovieClipsResponse response = new GetMovieClipsResponse();
+        response.setHasMoreClips(false);
         if (artistId == null && movieId == null) {
-            if(allClips) {
-                return movieClipService.getMovieClips();
+            if (allClips) {
+                response.setClips(movieClipService.getMovieClips());
             } else {
                 return movieClipService.getMovieClips(page);
             }
         } else if (artistId != null && movieId != null) {
-            return movieClipService.getMovieClips(artistId, movieId);
+            response.setClips(movieClipService.getMovieClips(artistId, movieId));
         } else if (movieId != null) {
-            return movieClipService.getMovieClips(movieId);
+            response.setClips(movieClipService.getMovieClips(movieId));
+
         } else {
             return movieClipService.getArtistMovieClips(artistId, page);
         }
+        return response;
     }
 
     @GET
